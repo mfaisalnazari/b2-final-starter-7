@@ -38,5 +38,25 @@ RSpec.describe InvoiceItem, type: :model do
     it 'incomplete_invoices' do
       expect(InvoiceItem.incomplete_invoices).to eq([@i1, @i3])
     end
+
+    it "returns applicable discounts" do
+      @merchant1 = Merchant.create!(name: 'Hair Care')
+      @merchant2 = Merchant.create!(name: ' Care')
+
+      @item_12 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
+      @item_8 = Item.create!(name: "Butterfly Clip", description: "This holds up your hair but in a clip", unit_price: 5, merchant_id: @merchant1.id)
+      @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
+      @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2, created_at: "2012-03-27 14:54:09")
+      @ii_N = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_12.id, quantity: 9, unit_price: 10, status: 2)
+      @ii_00 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 1, unit_price: 10, status: 1)
+
+      @discount_1 = Discount.create!(percentage: "10%", quantity: 7, merchant_id: @merchant1.id)
+      @discount_2 = Discount.create!(percentage: "5%", quantity: 5, merchant_id: @merchant1.id)
+      @discount_3 = Discount.create!(percentage: "14%", quantity: 3, merchant_id: @merchant2.id)
+      
+      expect(@ii_N.max_discount_applied).to eq(@discount_1)
+      expect(@ii_00.max_discount_applied).to eq(nil)
+
+    end
   end
 end

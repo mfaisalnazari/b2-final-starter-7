@@ -14,4 +14,14 @@ class InvoiceItem < ApplicationRecord
     invoice_ids = InvoiceItem.where("status = 0 OR status = 1").pluck(:invoice_id)
     Invoice.order(created_at: :asc).find(invoice_ids)
   end
+
+  def max_discount_applied
+    a = Discount.joins(merchant: :items)
+            .where(items: { id: item_id })  
+            .where('discounts.quantity <= ?', quantity)  
+            
+            highest_discount = a.max_by { |discount| discount.percentage.delete('%').to_i }          
+            
+            highest_discount
+  end
 end
