@@ -4,11 +4,12 @@
   <div class="row">
     <p class='col-12'><%= "Discount ##{@discount.id}" %></p>
   </div>
-
+  <div id="attributes">
 
   <p><%= "Percentage #{@discount.percentage}" %></p>
   <p><%= "Threshold #{@discount.quantity}" %></p><br/>
  
   <strong><%= link_to "Update Discount", edit_merchant_discount_path(@merchant, @discount) %></strong>
+  </div>
 
 </body>

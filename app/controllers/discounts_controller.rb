@@ -22,8 +22,13 @@ class DiscountsController < ApplicationController
     end
   
     def create
-      Discount.create!(discount_params)
-      redirect_to merchant_discounts_path(@merchant)
+      discount = Discount.new(discount_params)
+      if discount.save
+        redirect_to merchant_discounts_path(@merchant)
+      else
+        flash.notice = "All fields must be completed, get your act together."
+        redirect_to new_merchant_discount_path(@merchant)
+      end
     end
 
     def destroy

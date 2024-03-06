@@ -57,18 +57,41 @@ RSpec.describe "merchant discount" do
     expect(page).to have_content("30%")
     expect(page).to have_content(30)
   end
+
+  it "has a sad path for creating a new discount" do
+    click_link "Create New Discount"
+    expect(current_path).to eq(new_merchant_discount_path(@merchant1))
+    fill_in "percentage", with: "30%"
+    
+    click_button "Submit"
+
+    expect(current_path).to eq(new_merchant_discount_path(@merchant1))
+
+    expect(page).to have_content("All fields must be completed, get your act together.")
+
+    fill_in "percentage", with: "40%"
+    fill_in "quantity", with: 40
+
+    click_button "Submit"
+
+    expect(current_path).to eq(merchant_discounts_path(@merchant1))
+    expect(page).to have_content("40%")
+    expect(page).to have_content(40)
+  end
+
   it "has a link to delete a discount" do
     within("#discount_#{@discount_1.id}") do
       expect(page).to have_content(@discount_1.quantity)
       expect(page).to have_content(@discount_1.percentage)
 
       click_button "Delete Discount #{@discount_1.id}"
+
     end
-    expect(current_path).to eq(merchant_discounts_path(@merchant1))
-    
+
     expect(page).to_not have_content(@discount_1.quantity)
     expect(page).to_not have_content(@discount_1.percentage)
     
+    expect(current_path).to eq(merchant_discounts_path(@merchant1))
     
   end
 

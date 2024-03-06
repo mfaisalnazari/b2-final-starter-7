@@ -49,20 +49,23 @@ RSpec.describe "merchant discount show" do
     it "shows an specific discount" do
         visit merchant_discount_path(@merchant1, @discount_1)
         # visit "/merchants/#{@merchant1.id}/discounts/#{@discount_1.id}"
-        expect(page).to have_content(@discount_1.percentage)
-        expect(page).to have_content(@discount_1.quantity)
+        within("#attributes") do
 
-        expect(page).to_not have_content(@discount_2.quantity)
-        expect(page).to_not have_content(@discount_2.percentage)
+          expect(page).to have_content(@discount_1.percentage)
+          expect(page).to have_content(@discount_1.quantity)
 
+          expect(page).to_not have_content(@discount_2.quantity)
+          expect(page).to_not have_content(@discount_2.percentage)
+        end
         visit merchant_discount_path(@merchant1, @discount_2)
+        within("#attributes") do
         
-        expect(page).to_not have_content(@discount_1.percentage)
-        expect(page).to_not have_content(@discount_1.quantity)
+          expect(page).to_not have_content(@discount_1.percentage)
+          expect(page).to_not have_content(@discount_1.quantity)
 
-        expect(page).to have_content(@discount_2.quantity)
-        expect(page).to have_content(@discount_2.percentage)
-
+          expect(page).to have_content(@discount_2.quantity)
+          expect(page).to have_content(@discount_2.percentage)
+      end
     end
 
     it "updates a specific discount" do
@@ -82,12 +85,13 @@ RSpec.describe "merchant discount show" do
         click_button("Submit")
 
         expect(current_path).to eq(merchant_discount_path(@merchant1, @discount_1))
-        
-        expect(page).to have_content("15%")
-        expect(page).to have_content("15")
+        within("#attributes") do
+          expect(page).to have_content("15%")
+          expect(page).to have_content("15")
 
-        expect(page).to_not have_content(@discount_1.percentage)
-        expect(page).to_not have_content(@discount_1.quantity)
+          expect(page).to_not have_content(@discount_1.percentage)
+          expect(page).to_not have_content(@discount_1.quantity)
+        end
     end
 
 end
